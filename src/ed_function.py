@@ -19,3 +19,11 @@ def load_data(filepath):
     """
     return pd.read_csv(filepath)
 
+
+def add_headline_length(df, headline_col="headline"):
+    """Add a column for headline length."""
+    df = df.copy()
+    df["headline_length"] = df[headline_col].str.len()
+    return df
+
+
