@@ -27,3 +27,32 @@ def add_headline_length(df, headline_col="headline"):
     return df
 
 
+def describe_headline_length(df):
+    """Return descriptive statistics for headline length."""
+    return df["headline_length"].describe()
+
+
+def count_articles_per_publisher(df, publisher_col="publisher"):
+    """Return article counts per publisher."""
+    return df[publisher_col].value_counts()
+
+
+def plot_articles_per_day(df, date_col="date"):
+    """Plot number of articles per day, handling tz-aware and tz-naive values."""
+    df = df.copy()
+    # Convert to datetime with errors='coerce' to avoid ValueError
+    df[date_col] = pd.to_datetime(df[date_col], errors='coerce')
+    # Normalize all datetimes to be tz-naive (remove timezone info)
+    if hasattr(df[date_col], 'dt'):
+        df[date_col] = df[date_col].dt.tz_localize(None)
+    daily_counts = df[date_col].dt.date.value_counts().sort_index()
+    plt.figure(figsize=(10,4))
+    daily_counts.plot()
+    plt.title("Articles per Day")
+    plt.xlabel("Date")
+    plt.ylabel("Count")
+    plt.tight_layout()
+    plt.show()
+
+
+
