@@ -14,4 +14,4 @@ pandas
 textblob
 python-dotenv
 tqdm
-sklearn
+scikit-learn
