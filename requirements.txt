@@ -10,3 +10,8 @@ spacy
 jupyter
 notebook
 ipykernel
+pandas
+textblob
+python-dotenv
+tqdm
+sklearn
