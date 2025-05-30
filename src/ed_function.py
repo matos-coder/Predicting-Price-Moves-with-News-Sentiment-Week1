@@ -62,3 +62,17 @@ def extract_top_keywords(df, text_col="headline", n_keywords=20):
     return vectorizer.get_feature_names_out()
 
 
+def plot_weekly_article_count(df, date_col="date"):
+    """Plot weekly article count."""
+    df = df.copy()
+    df[date_col] = pd.to_datetime(df[date_col])
+    weekly_counts = df.set_index(date_col).resample("W").size()
+    plt.figure(figsize=(10,4))
+    weekly_counts.plot()
+    plt.title("Weekly Article Count")
+    plt.xlabel("Week")
+    plt.ylabel("Count")
+    plt.tight_layout()
+    plt.show()
+
+
