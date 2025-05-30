@@ -76,3 +76,19 @@ def plot_weekly_article_count(df, date_col="date"):
     plt.show()
 
 
+def publisher_domain_analysis(df, publisher_col="publisher"):
+    """Return value counts of publisher domains."""
+    df = df.copy()
+    df["publisher_domain"] = df[publisher_col].str.extract(r'@([\w\.-]+)')
+    return df["publisher_domain"].value_counts()
+
+
+def parse_date_column(df, date_col="date"):
+    """Parse a date column, handle errors, and normalize tz-aware/naive datetimes."""
+    df = df.copy()
+    df[date_col] = pd.to_datetime(df[date_col], errors='coerce')
+    if hasattr(df[date_col], 'dt'):
+        df[date_col] = df[date_col].dt.tz_localize(None)
+    return df
+
+
