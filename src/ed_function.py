@@ -55,4 +55,10 @@ def plot_articles_per_day(df, date_col="date"):
     plt.show()
 
 
+def extract_top_keywords(df, text_col="headline", n_keywords=20):
+    """Extract top keywords from text column."""
+    vectorizer = CountVectorizer(stop_words="english", max_features=n_keywords)
+    X = vectorizer.fit_transform(df[text_col].fillna(""))
+    return vectorizer.get_feature_names_out()
+
 
