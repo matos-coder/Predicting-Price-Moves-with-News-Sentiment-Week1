@@ -4,7 +4,6 @@ seaborn
 scipy
 plotly
 windrose
-scikit-learn
 nltk
 spacy
 jupyter
@@ -15,3 +14,4 @@ textblob
 python-dotenv
 tqdm
 scikit-learn
+#'TA_Lib-0.4.28-cp312-cp312-win_amd64.whl'
