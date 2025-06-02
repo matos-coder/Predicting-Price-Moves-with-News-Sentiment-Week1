@@ -14,4 +14,5 @@ textblob
 python-dotenv
 tqdm
 scikit-learn
+pynance
 #'TA_Lib-0.4.28-cp312-cp312-win_amd64.whl'
