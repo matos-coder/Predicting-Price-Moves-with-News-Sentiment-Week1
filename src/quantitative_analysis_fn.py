@@ -3,6 +3,9 @@ Quantitative analysis functions for Task 2: Stock price analysis using TA-Lib an
 """
 import pandas as pd
 import matplotlib.pyplot as plt
+import talib
+import yfinance as yf
+import pynance as pn
 
 class QuantAnalysis:
     @staticmethod
@@ -68,4 +71,23 @@ class QuantAnalysis:
             return data
         except Exception as e:
             print(f"Error fetching data from PyNance: {e}")
+            return None
+
+    @staticmethod
+    def get_financial_metrics(ticker, start, end):
+        """Fetch financial metrics using yfinance."""
+        try:
+            # Create ticker object
+            stock = yf.Ticker(ticker)
+            
+            # Fetch historical data
+            data = stock.history(start=start, end=end)
+            
+            if data.empty:
+                print(f"No data found for ticker {ticker}")
+                return None
+                
+            return data
+        except Exception as e:
+            print(f"Error fetching data: {e}")
             return None
