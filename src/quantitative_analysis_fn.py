@@ -6,6 +6,9 @@ import matplotlib.pyplot as plt
 import talib
 import yfinance as yf
 import pynance as pn
+from textblob import TextBlob
+import os
+import traceback
 
 class QuantAnalysis:
     @staticmethod
@@ -91,3 +94,114 @@ class QuantAnalysis:
         except Exception as e:
             print(f"Error fetching data: {e}")
             return None
+        
+
+
+class NewsSentimentCorrelation:
+    """
+    Task 3: Correlation between News Sentiment and Stock Movement
+    Functions for aligning news and stock data, performing sentiment analysis, calculating returns, and correlation analysis.
+    """
+    @staticmethod
+    def load_and_align_data(news_path, stock_path):
+        """
+        Loads news and stock data, parses dates, and aligns both datasets by date.
+        Handles mixed timezone data and invalid entries.
+        
+        Returns:
+            tuple: (news_df, stock_df) - Both are DataFrames or both are None
+        """
+        try:
+            # Validate file paths first
+            if not os.path.exists(news_path):
+                raise FileNotFoundError(f"News file not found: {news_path}")
+            if not os.path.exists(stock_path):
+                raise FileNotFoundError(f"Stock file not found: {stock_path}")
+
+            # Load datasets with explicit datetime parsing
+            news_df = pd.read_csv(
+                news_path,
+                parse_dates=['date'],
+                dayfirst=True,
+                on_bad_lines='warn',
+                encoding_errors='replace'
+            )
+            
+            stock_df = pd.read_csv(
+                stock_path,
+                parse_dates=['Date'],
+                dayfirst=True,
+                on_bad_lines='warn',
+                encoding_errors='replace'
+            )
+
+            # Check required columns
+            if 'date' not in news_df.columns:
+                raise ValueError("News data missing 'date' column")
+            if 'Date' not in stock_df.columns:
+                raise ValueError("Stock data missing 'Date' column")
+
+            # Clean data
+            news_df = news_df.dropna(subset=['date'])
+            stock_df = stock_df.dropna(subset=['Date'])
+
+            # Handle timezones - convert all to naive datetime
+            news_df['date'] = pd.to_datetime(news_df['date'], utc=True).dt.tz_localize(None).dt.date
+            stock_df['date'] = pd.to_datetime(stock_df['Date'], utc=True).dt.tz_localize(None).dt.date
+
+            # Validate
+            if news_df.empty:
+                raise ValueError("News DataFrame is empty after cleaning")
+            if stock_df.empty:
+                raise ValueError("Stock DataFrame is empty after cleaning")
+
+            print("News data sample:")
+            print(news_df[['date', 'headline']].head())
+            print("\nStock data sample:")
+            print(stock_df[['date', 'Close']].head())
+
+            return news_df, stock_df
+
+        except Exception as e:
+            print(f"\nERROR in load_and_align_data: {str(e)}\n")
+            print(f"News path: {news_path}")
+            print(f"Stock path: {stock_path}")
+            traceback.print_exc()
+            return None, None
+
+
+
+    @staticmethod
+    def compute_sentiment(news_df):
+        """
+        Adds a 'sentiment' column to news_df using TextBlob polarity.
+        """
+        news_df['sentiment'] = news_df['headline'].astype(str).apply(lambda x: TextBlob(x).sentiment.polarity)
+        return news_df
+
+    @staticmethod
+    def compute_daily_returns(stock_df):
+        """
+        Computes daily percentage returns from closing prices.
+        """
+        stock_df = stock_df.copy()
+        stock_df['daily_return'] = stock_df['Close'].pct_change()
+        return stock_df[['date', 'daily_return']].dropna()
+
+    @staticmethod
+    def aggregate_daily_sentiment(news_df):
+        """
+        Aggregates sentiment scores by date (mean if multiple headlines per day).
+        """
+        daily_sentiment = news_df.groupby('date')['sentiment'].mean().reset_index()
+        daily_sentiment.rename(columns={'sentiment': 'avg_sentiment'}, inplace=True)
+        return daily_sentiment
+
+    @staticmethod
+    def merge_and_correlate(daily_sentiment, daily_returns):
+        """
+        Merges daily sentiment and returns by date and computes Pearson correlation.
+        """
+        merged = pd.merge(daily_sentiment, daily_returns, on='date', how='inner')
+        correlation = merged['avg_sentiment'].corr(merged['daily_return'])
+        return merged, correlation
