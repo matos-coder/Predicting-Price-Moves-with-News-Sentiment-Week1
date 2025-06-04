@@ -73,6 +73,78 @@ The main workflow is implemented in [`quantitative analysis.ipynb`](notebooks/qu
 - Ensure your data includes the required OHLCV columns.
 - Adjust indicator parameters as needed for your analysis.
 
-## Contact
 
+# Correlation Analysis – News Sentiment & Stock Movement (Task 3)
+
+This folder contains the notebook and supporting code for Task 3: Analyzing the correlation between financial news sentiment and stock price movements.
+
+## Objective
+
+Align news and stock price data by date, perform sentiment analysis on news headlines, and analyze the correlation between daily news sentiment and stock returns.
+
+## Workflow Overview
+
+The workflow is implemented in [`notebooks/qualitative_analysis.ipynb`](notebooks/qualitative_analysis.ipynb):
+
+---
+
+### 1. Date Alignment
+
+- **Load news and stock price data** from CSV files.
+- **Normalize and align dates** to ensure each news item matches the corresponding stock trading day.
+- If multiple news items exist for a single day, aggregate them (e.g., by averaging sentiment scores).
+
+---
+
+### 2. Sentiment Analysis
+
+- **Conduct sentiment analysis** on news headlines to quantify the tone of each article (positive, negative, neutral).
+- **Tools:** Use Python libraries such as TextBlob or NLTK for sentiment scoring.
+- Assign a sentiment polarity score to each headline.
+
+---
+
+### 3. Calculate Daily Stock Returns
+
+- **Compute daily percentage returns** from closing prices to represent stock movements.
+- Use pandas to calculate the percentage change in daily closing prices.
+
+---
+
+### 4. Correlation Analysis
+
+- **Aggregate daily sentiment scores** (e.g., mean sentiment per day).
+- **Merge** the daily sentiment scores with daily stock returns by date.
+- **Calculate the Pearson correlation coefficient** between average daily sentiment scores and daily stock returns.
+- Use statistical methods to test the strength and significance of the correlation.
+
+---
+
+## Key Performance Indicators (KPIs)
+
+- **Proactivity to Self-Learn:** References to sentiment analysis and correlation methods.
+- **Sentiment Analysis:** Effective quantification of news tone.
+- **Correlation Strength:** Statistical measure of relationship between sentiment and returns.
+
+## Example Outputs
+
+- DataFrame with date, average sentiment, and daily return columns.
+- Pearson correlation coefficient value.
+- Plots visualizing sentiment, returns, and their relationship.
+
+## References
+
+- [TextBlob Documentation](https://textblob.readthedocs.io/en/dev/)
+- [NLTK Documentation](https://www.nltk.org/)
+- [Pandas Documentation](https://pandas.pydata.org/)
+- [Pearson Correlation (Wikipedia)](https://en.wikipedia.org/wiki/Pearson_correlation_coefficient)
+
+## Customization
+
+- To analyze a different stock or news dataset, update the file paths and column names as needed.
+- Swap out sentiment analysis tools for more advanced models if desired.
+
+
+
+## Contact
 For questions or collaboration, contact: matiasashenafi0@gmail.com
